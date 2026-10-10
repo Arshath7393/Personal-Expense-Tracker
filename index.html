@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#f5f7f4">
+    <title>Personal Expense Tracker</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/script.js" defer></script>
+</head>
+<body>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" href="/" aria-label="Personal Expense Tracker home">
+                <span class="brand-icon" aria-hidden="true">P</span>
+                <span>pennywise</span>
+            </a>
+            <p class="sidebar-label">WORKSPACE</p>
+            <a class="nav-link active" href="#overview">
+                <span aria-hidden="true">▦</span> Overview
+            </a>
+            <a class="nav-link" href="#expenses">
+                <span aria-hidden="true">↗</span> Expenses
+            </a>
+            <div class="sidebar-note">
+                <span class="note-icon" aria-hidden="true">✳</span>
+                <p>Small steps today make a big difference tomorrow.</p>
+            </div>
+            <p class="sidebar-footer">PERSONAL EXPENSE TRACKER</p>
+        </aside>
+
+        <main class="main-content" id="overview">
+            <header class="topbar">
+                <div>
+                    <p class="eyebrow">YOUR MONEY, IN PERSPECTIVE</p>
+                    <h1>Good day <span aria-hidden="true">✳</span></h1>
+                    <p class="subtitle">Keep track of where your money goes.</p>
+                </div>
+                <div class="today-label" id="today-label"></div>
+            </header>
+
+            <section class="summary-grid" aria-label="Expense summary">
+                <article class="summary-card total-card">
+                    <div class="summary-topline">
+                        <span class="summary-label">TOTAL SPENT</span>
+                        <span class="summary-icon" aria-hidden="true">↗</span>
+                    </div>
+                    <p class="summary-value" id="total-amount">0.00</p>
+                    <p class="summary-footnote">Across all recorded expenses</p>
+                </article>
+                <article class="summary-card count-card">
+                    <div class="summary-topline">
+                        <span class="summary-label">EXPENSES TRACKED</span>
+                        <span class="summary-icon" aria-hidden="true">≡</span>
+                    </div>
+                    <p class="summary-value" id="expense-count">0</p>
+                    <p class="summary-footnote">Entries in your expense list</p>
+                </article>
+            </section>
+
+            <section class="content-grid">
+                <article class="panel add-panel">
+                    <div class="panel-heading">
+                        <div>
+                            <p class="eyebrow">NEW ENTRY</p>
+                            <h2>Add an expense</h2>
+                        </div>
+                        <span class="panel-heading-icon" aria-hidden="true">＋</span>
+                    </div>
+                    <form id="add-form">
+                        <label for="expense-name">Expense name</label>
+                        <input id="expense-name" name="expense_name" type="text"
+                               maxlength="100" placeholder="e.g. Weekly groceries" required>
+
+                        <div class="form-row">
+                            <div>
+                                <label for="expense-amount">Amount</label>
+                                <input id="expense-amount" name="amount" type="number"
+                                       min="0.01" step="0.01" placeholder="0.00" required>
+                            </div>
+                            <div>
+                                <label for="expense-date">Date</label>
+                                <input id="expense-date" name="expense_date" type="date" required>
+                            </div>
+                        </div>
+
+                        <label for="expense-category">Category</label>
+                        <input id="expense-category" name="category" type="text"
+                               maxlength="50" placeholder="e.g. Food" required>
+                        <button class="button button-primary submit-button" type="submit">
+                            <span aria-hidden="true">＋</span> Add expense
+                        </button>
+                        <p class="form-message" id="form-message" role="status"></p>
+                    </form>
+                </article>
+
+                <article class="panel list-panel" id="expenses">
+                    <div class="list-heading">
+                        <div>
+                            <p class="eyebrow">YOUR RECORDS</p>
+                            <h2>Recent expenses</h2>
+                        </div>
+                        <form class="search-form" id="search-form" role="search">
+                            <label class="visually-hidden" for="search-input">
+                                Search expense names
+                            </label>
+                            <input id="search-input" type="search"
+                                   placeholder="Search expenses">
+                            <button class="button button-search" type="submit">Search</button>
+                            <button class="button button-reset" id="reset-search"
+                                    type="button" hidden>Clear</button>
+                        </form>
+                    </div>
+
+                    <p class="list-message" id="list-message" role="status"></p>
+                    <div class="table-wrap">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th scope="col">EXPENSE</th>
+                                    <th scope="col">CATEGORY</th>
+                                    <th scope="col">DATE</th>
+                                    <th scope="col" class="amount-column">AMOUNT</th>
+                                    <th scope="col"><span class="visually-hidden">Actions</span></th>
+                                </tr>
+                            </thead>
+                            <tbody id="expense-rows"></tbody>
+                        </table>
+                        <div class="empty-state" id="empty-state" hidden>
+                            <span aria-hidden="true">✳</span>
+                            <h3>No expenses to show</h3>
+                            <p>Add an expense or try a different search.</p>
+                        </div>
+                    </div>
+                </article>
+            </section>
+            <footer class="page-footer">A little clarity goes a long way.</footer>
+        </main>
+    </div>
+
+    <dialog class="edit-dialog" id="edit-dialog">
+        <form id="edit-form">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">EDIT RECORD</p>
+                    <h2>Update expense</h2>
+                </div>
+                <button class="close-button" id="close-dialog" type="button"
+                        aria-label="Close edit form">×</button>
+            </div>
+            <input id="edit-id" name="expense_id" type="hidden">
+            <label for="edit-name">Expense name</label>
+            <input id="edit-name" name="expense_name" type="text"
+                   maxlength="100" required>
+            <div class="form-row">
+                <div>
+                    <label for="edit-amount">Amount</label>
+                    <input id="edit-amount" name="amount" type="number"
+                           min="0.01" step="0.01" required>
+                </div>
+                <div>
+                    <label for="edit-date">Date</label>
+                    <input id="edit-date" name="expense_date" type="date" required>
+                </div>
+            </div>
+            <label for="edit-category">Category</label>
+            <input id="edit-category" name="category" type="text"
+                   maxlength="50" required>
+            <p class="form-message" id="edit-message" role="status"></p>
+            <button class="button button-primary submit-button" type="submit">
+                Save changes
+            </button>
+        </form>
+    </dialog>
+</body>
+</html>
